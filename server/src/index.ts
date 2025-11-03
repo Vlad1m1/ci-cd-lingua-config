@@ -8,6 +8,10 @@ import {corsConfig} from "./config/corsConfig";
 import routes from "./routes";
 import {sequelize} from './models';
 import tokenCleanupService from './services/tokenCleanup.service';
+import path from "path";
+import {swaggerConfig} from "./config/swaggerConfig";
+
+export const ROOT_PATH = path.resolve(__dirname, '..');
 
 const app = express();
 
@@ -17,7 +21,13 @@ const isDev = config.env === 'development';
 app.use(express.json());
 app.use(cors(corsConfig(isDev)));
 app.use(cookieParser());
+
 app.use('/api', routes);
+
+if(isDev) {
+	app.use("/api/docs", ...swaggerConfig());
+}
+
 app.use(errorHandlingMiddleware);
 
 const start = async () => {
@@ -30,6 +40,10 @@ const start = async () => {
 	app.listen(port, () => {
 		logger.info(`Сервер запущен на http://localhost:${port} [${config.env}]`);
 	});
+	
+	if(isDev) {
+		logger.info(`Документация Swagger http://localhost:${port}/api/docs`);
+	}
 }
 
 start()
