@@ -46,77 +46,10 @@ class AuthController {
 
 			const authResponse = await authService.authenticate(initData);
 
-			res.cookie('refreshToken', authResponse.refreshToken, {
-				maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-				httpOnly: true,
-				secure: process.env.NODE_ENV === 'production',
-				sameSite: 'strict',
-			});
-
 			return res.json({
 				accessToken: authResponse.accessToken,
 				user: authResponse.user,
 			});
-		} catch (error) {
-			next(error);
-		}
-	}
-
-	/**
-	 * Refreshes access token using refresh token from cookie
-	 * @param req - Request with refreshToken in cookies
-	 * @param res - Response with new access token
-	 * @param next - Next middleware function
-	 * @example
-	 * Response:
-	 * {
-	 *   "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-	 * }
-	 */
-	async refresh(req: Request, res: Response, next: NextFunction) {
-		try {
-			const { refreshToken } = req.cookies;
-
-			if (!refreshToken) {
-				throw ApiError.errorByType('UNAUTHORIZED');
-			}
-
-			const tokens = await authService.refresh(refreshToken);
-
-			res.cookie('refreshToken', tokens.refreshToken, {
-				maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-				httpOnly: true,
-				secure: process.env.NODE_ENV === 'production',
-				sameSite: 'strict',
-			});
-
-			return res.json({ accessToken: tokens.accessToken });
-		} catch (error) {
-			next(error);
-		}
-	}
-
-	/**
-	 * Logs out user by invalidating refresh token
-	 * @param req - Request with refreshToken in cookies
-	 * @param res - Response with success message
-	 * @param next - Next middleware function
-	 * @example
-	 * Response:
-	 * {
-	 *   "message": "Logged out successfully"
-	 * }
-	 */
-	async logout(req: Request, res: Response, next: NextFunction) {
-		try {
-			const { refreshToken } = req.cookies;
-
-			if (refreshToken) {
-				await authService.logout(refreshToken);
-			}
-
-			res.clearCookie('refreshToken');
-			return res.json({ message: 'Logged out successfully' });
 		} catch (error) {
 			next(error);
 		}

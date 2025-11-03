@@ -12,7 +12,6 @@ import { Words } from './entities/Words';
 import { SentenceWords } from './entities/SentenceWords';
 import { User } from './entities/User';
 import { UserLevel } from './entities/UserLevel';
-import { UserTokens } from './entities/UserTokens';
 import { FriendRequest } from './entities/FriendRequest';
 import { Friends } from './entities/Friends';
 import { Duel } from './entities/Duel';
@@ -82,7 +81,6 @@ const initAssociations = () => {
 	// User associations
 	User.belongsTo(Language, { foreignKey: 'languageId', as: 'language' });
 	User.hasMany(UserLevel, { foreignKey: 'userId', as: 'userLevels' });
-	User.hasMany(UserTokens, { foreignKey: 'userId', as: 'tokens' });
 	User.hasMany(FriendRequest, { foreignKey: 'requesterId', as: 'sentFriendRequests' });
 	User.hasMany(FriendRequest, { foreignKey: 'addresseeId', as: 'receivedFriendRequests' });
 	User.hasMany(Duel, { foreignKey: 'winnerId', as: 'wonDuels' });
@@ -91,9 +89,6 @@ const initAssociations = () => {
 	// UserLevel associations
 	UserLevel.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 	UserLevel.belongsTo(Level, { foreignKey: 'levelId', as: 'level' });
-
-	// UserTokens associations
-	UserTokens.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 
 	// FriendRequest associations
 	FriendRequest.belongsTo(User, { foreignKey: 'requesterId', as: 'requester' });
@@ -124,7 +119,6 @@ export {
 	SentenceWords,
 	User,
 	UserLevel,
-	UserTokens,
 	FriendRequest,
 	Friends,
 	Duel,
@@ -151,7 +145,6 @@ export default {
 	SentenceWords,
 	User,
 	UserLevel,
-	UserTokens,
 	FriendRequest,
 	Friends,
 	Duel,

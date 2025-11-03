@@ -7,7 +7,6 @@ import {errorHandlingMiddleware} from "./middleware/errorHandling.middleware";
 import {corsConfig} from "./config/corsConfig";
 import routes from "./routes";
 import {sequelize} from './models';
-import tokenCleanupService from './services/tokenCleanup.service';
 import path from "path";
 import {swaggerConfig} from "./config/swaggerConfig";
 
@@ -33,9 +32,6 @@ app.use(errorHandlingMiddleware);
 const start = async () => {
 	await sequelize.authenticate();
 	await sequelize.sync();
-	
-	// Start token cleanup service (runs every 24 hours)
-	tokenCleanupService.start();
 	
 	app.listen(port, () => {
 		logger.info(`Сервер запущен на http://localhost:${port} [${config.env}]`);

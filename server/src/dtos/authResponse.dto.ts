@@ -16,16 +16,14 @@ import type { UserDTO } from './user.dto';
  *           example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
  *         user:
  *           $ref: '#/components/schemas/UserDTO'
- *       description: Response after successful authentication (refreshToken is set in httpOnly cookie)
+ *       description: Response after successful authentication
  */
 export class AuthResponseDTO {
 	accessToken: string;
-	refreshToken: string;
 	user: UserDTO;
 
-	constructor(accessToken: string, refreshToken: string, user: UserDTO) {
+	constructor(accessToken: string, user: UserDTO) {
 		this.accessToken = accessToken;
-		this.refreshToken = refreshToken;
 		this.user = user;
 	}
 }

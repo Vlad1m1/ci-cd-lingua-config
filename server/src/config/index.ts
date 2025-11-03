@@ -38,8 +38,6 @@ export const TTS_DTYPE = env('TTS_DTYPE', 'q8');
 // JWT & Auth
 export const JWT_SECRET = env('JWT_SECRET', 'secret-key');
 export const JWT_EXPIRES_IN = env('JWT_EXPIRES_IN', '7d');
-export const JWT_REFRESH_SECRET = env('JWT_REFRESH_SECRET', 'secret-key-refresh');
-export const JWT_REFRESH_EXPIRES_IN = env('JWT_REFRESH_EXPIRES_IN', '30d');
 export const BOT_TOKEN = env('BOT_TOKEN', '');
 
 // Quest scoring
@@ -62,8 +60,6 @@ export const config = {
 	auth: {
 		jwtSecret: JWT_SECRET,
 		jwtExpiresIn: JWT_EXPIRES_IN,
-		jwtRefreshSecret: JWT_REFRESH_SECRET,
-		jwtRefreshExpiresIn: JWT_REFRESH_EXPIRES_IN,
 		botToken: BOT_TOKEN,
 	},
 	scoring: {

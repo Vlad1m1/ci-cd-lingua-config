@@ -7,7 +7,6 @@ import { ApiError } from "../error/apiError";
 import tokenService from './token.service';
 import { UserDTO } from '../dtos/user.dto';
 import { AuthResponseDTO } from '../dtos/authResponse.dto';
-import { RefreshResponseDTO } from '../dtos/refreshResponse.dto';
 
 export class AuthService {
 	validateBotInitData(initDataString: string): InitData {
@@ -93,11 +92,9 @@ export class AuthService {
 
 		const tokens = tokenService.GenerateTokens({ userId: user.id });
 
-		await tokenService.SaveToken(user.id, tokens.refreshToken);
-
 		const userDTO = UserDTO.fromUser(user);
 
-		return new AuthResponseDTO(tokens.accessToken, tokens.refreshToken, userDTO);
+		return new AuthResponseDTO(tokens.accessToken, userDTO);
 	}
 
 	verifyToken(token: string): JwtPayload | null {
@@ -110,37 +107,6 @@ export class AuthService {
 		}
 	}
 
-	async refresh(refreshToken: string): Promise<RefreshResponseDTO> {
-		if (!refreshToken) {
-			throw ApiError.errorByType('UNAUTHORIZED');
-		}
-
-		const userData = tokenService.ValidateRefreshToken(refreshToken);
-	  
-	  if (!userData) {
-		  throw ApiError.errorByType('UNAUTHORIZED');
-	  }
-	
-		const tokenFromDb = await tokenService.FindToken(refreshToken);
-
-		if (!tokenFromDb) {
-			throw ApiError.errorByType('UNAUTHORIZED');
-		}
-	
-		const user = await User.findByPk(userData.userId);
-
-		if (!user) {
-			throw ApiError.errorByType('UNAUTHORIZED');
-		}
-
-		const tokens = tokenService.GenerateTokens({ userId: user.id });
-    
-		// Delete old refresh token and save new one
-		await tokenService.SaveToken(user.id, tokens.refreshToken, refreshToken);
-
-		return new RefreshResponseDTO(tokens.accessToken, tokens.refreshToken);
-	}
-
 	async getProfile(userId: number): Promise<UserDTO> {
 		const user = await User.findByPk(userId);
     
@@ -149,14 +115,6 @@ export class AuthService {
 		}
 
 		return UserDTO.fromUser(user);
-	}
-
-	async logout(token: string): Promise<void> {
-		await tokenService.RemoveToken(token);
-	}
-
-	async cleanupExpiredTokens(): Promise<number> {
-		return await tokenService.CleanupExpiredTokens();
 	}
 }
 
