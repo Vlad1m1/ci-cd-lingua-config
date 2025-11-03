@@ -1,0 +1,210 @@
+---
+  openapi: "3.0.0"
+  info: 
+    title: "ForeignLang"
+    description: "This service defines the main API methods"
+    version: "1.0.0"
+    contact: 
+      name: "Dmitriy Prokhorov"
+      email: "dmitriy.prokhorov.04@gmail.com"
+  host: "localhost:8080"
+  basePath: "/"
+  produces: 
+    - "application/json"
+  schemes: 
+    - "http"
+  securityDefinitions: 
+    JWT: 
+      type: "apiKey"
+      in: "header"
+      name: "Authorization"
+      description: ""
+  components: 
+    securitySchemes: 
+      JWT: 
+        type: "http"
+        scheme: "bearer"
+        bearerFormat: "JWT"
+        description: "Input your JWT as: Bearer <token>"
+    schemas: 
+      AuthResponseDTO: 
+        type: "object"
+        required: 
+          - "accessToken"
+          - "user"
+        properties: 
+          accessToken: 
+            type: "string"
+            description: "JWT access token for authentication"
+            example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          user: 
+            $ref: "#/components/schemas/UserDTO"
+        description: "Response after successful authentication (refreshToken is set in httpOnly cookie)"
+      RefreshResponseDTO: 
+        type: "object"
+        required: 
+          - "accessToken"
+        properties: 
+          accessToken: 
+            type: "string"
+            description: "New JWT access token"
+            example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        description: "Response after successful token refresh (new refreshToken is set in httpOnly cookie)"
+      UserDTO: 
+        type: "object"
+        required: 
+          - "id"
+          - "externalId"
+          - "username"
+          - "stars"
+          - "exp"
+          - "role"
+          - "createdAt"
+        properties: 
+          id: 
+            type: "integer"
+            description: "Internal user ID"
+            example: 1
+          externalId: 
+            type: "integer"
+            description: "External user ID from Telegram"
+            example: 123456789
+          username: 
+            type: "string"
+            description: "Username"
+            example: "john_doe"
+          firstName: 
+            type: "string"
+            description: "User's first name"
+            example: "John"
+          lastName: 
+            type: "string"
+            description: "User's last name"
+            example: "Doe"
+          photoUrl: 
+            type: "string"
+            description: "URL to user's photo"
+            example: "https://example.com/photo.jpg"
+          stars: 
+            type: "integer"
+            description: "Number of stars earned"
+            example: 100
+          exp: 
+            type: "integer"
+            description: "Experience points"
+            example: 500
+          role: 
+            type: "string"
+            enum: 
+              - "user"
+              - "admin"
+            description: "User role"
+            example: "user"
+          languageId: 
+            type: "integer"
+            description: "Selected language ID"
+            example: 1
+          createdAt: 
+            type: "string"
+            format: "date-time"
+            description: "Account creation date"
+            example: "2024-01-01T00:00:00.000Z"
+          lastLoginAt: 
+            type: "string"
+            format: "date-time"
+            description: "Last login date"
+            example: "2024-01-15T10:30:00.000Z"
+  paths: 
+    /auth/login: 
+      post: 
+        tags: 
+          - "Authentication"
+        summary: "Authenticate user via Telegram initData"
+        description: "Authenticates a user using Telegram WebApp initData and returns access token. RefreshToken is set in httpOnly cookie."
+        requestBody: 
+          required: true
+          content: 
+            application/json: 
+              schema: 
+                type: "object"
+                required: 
+                  - "initData"
+                properties: 
+                  initData: 
+                    type: "string"
+                    description: "Telegram WebApp initialization data"
+                    example: "query_id=AAHdF6IQAAAAAN0XohDhrOrc&user=%7B%22id%22%3A279058397..."
+        responses: 
+          200: 
+            description: "Successfully authenticated"
+            headers: 
+              Set-Cookie: 
+                description: "HttpOnly cookie with refresh token"
+                schema: 
+                  type: "string"
+                  example: "refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...; Max-Age=2592000; Path=/; HttpOnly; Secure; SameSite=Strict"
+            content: 
+              application/json: 
+                schema: 
+                  $ref: "#/components/schemas/AuthResponseDTO"
+          400: 
+            description: "Bad request - initData is missing"
+          401: 
+            description: "Unauthorized - invalid initData"
+    /auth/refresh: 
+      post: 
+        tags: 
+          - "Authentication"
+        summary: "Refresh access token"
+        description: "Generates a new access token using the refresh token from cookie. New refreshToken is also set in httpOnly cookie."
+        responses: 
+          200: 
+            description: "Successfully refreshed tokens"
+            headers: 
+              Set-Cookie: 
+                description: "HttpOnly cookie with new refresh token"
+                schema: 
+                  type: "string"
+                  example: "refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...; Max-Age=2592000; Path=/; HttpOnly; Secure; SameSite=Strict"
+            content: 
+              application/json: 
+                schema: 
+                  $ref: "#/components/schemas/RefreshResponseDTO"
+          401: 
+            description: "Unauthorized - refresh token is missing or invalid"
+    /auth/logout: 
+      post: 
+        tags: 
+          - "Authentication"
+        summary: "Logout user"
+        description: "Invalidates the refresh token and clears the cookie"
+        responses: 
+          200: 
+            description: "Successfully logged out"
+            content: 
+              application/json: 
+                schema: 
+                  type: "object"
+                  properties: 
+                    message: 
+                      type: "string"
+                      example: "Logged out successfully"
+    /auth/me: 
+      get: 
+        tags: 
+          - "Authentication"
+        summary: "Get current user profile"
+        description: "Returns the profile of the currently authenticated user"
+        security: 
+          - 
+            JWT: []
+        responses: 
+          200: 
+            description: "User profile retrieved successfully"
+            content: 
+              application/json: 
+                schema: 
+                  $ref: "#/components/schemas/UserDTO"
+          401: 
+            description: "Unauthorized - invalid or missing access token"
+  tags: []
