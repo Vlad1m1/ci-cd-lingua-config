@@ -1,0 +1,17 @@
+.leaderBoardList {
+  background-color: var(--background-secondary-color);
+  border-radius: 14px 14px 0 0;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.virtualListContainer {
+  background-color: var(--background-primary-color);
+
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+}

@@ -4,7 +4,7 @@ import starAnimation from "../assets/lottie/star.json";
 import AdminPage from "../pages/AdminPage/AdminPage";
 import CoursePage from "../pages/CoursePage/CoursePage";
 import GamePage from "../pages/GamePage/GamePage";
-import StatsPage from "../pages/StatsPage/StatsPage";
+import LeaderboardPage from "@pages/LeaderboardPage/LeaderboardPage";
 
 import type {TabNavigatorConfig} from "@components/TabBar/TabNavigator";
 
@@ -29,6 +29,6 @@ export const getTabsConfig = (openPopup: (content: JSX.Element) => void): TabNav
 		id: "puzzle3",
 		label: "Лидеры",
 		animation: starAnimation,
-		component: <StatsPage />,
+		component: <LeaderboardPage />,
 	},
 ];

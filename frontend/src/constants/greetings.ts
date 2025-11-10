@@ -6,5 +6,4 @@ export const GREETING_STRINGS = [
 	"Jambo", "Sawubona", "Namaste", "Xin chào",
 	"Salam", "Hallå", "Terve", "Cześć", "Bongu",
 	"Kia ora", "Hei", "Halló", "Tere", "Sveiki",
-	"Përshëndetje", "Sawatdii", "Dobrý den", "Salve"
-];
+	"Përshëndetje", "Sawatdii", "Dobrý den", "Salve"];

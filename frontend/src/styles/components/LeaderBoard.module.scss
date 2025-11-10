@@ -1,0 +1,77 @@
+
+.podiumStand {
+  position: relative;
+  margin: 10em auto 0;
+  width: 20em; height: 20em;
+  background: dimgrey;
+}
+
+.podiumFirstPlace {
+  position: absolute;
+  transform-origin: bottom right;
+  content: '';
+  right: 0; bottom: 100%; left: 0;
+  height: 4em;
+  background: silver;
+  clip-path: polygon(0% 100%, 17.5% 50%, 82.5% 50%, 100% 100%); //используй для отрисовки подиума 3d
+}
+
+.leaderboard {
+  display: flex;
+  flex-direction: column;
+  bottom: var(--tabbar-height);
+  width: 100%;
+  position: absolute;
+}
+
+.userRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: var(--padding-xs) var(--padding-s);
+  background-color: var(--background-primary-color);
+  transition: background-color var(--animation-speed-0) var(--transition-ease-base);
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--background-secondary-color);
+  }
+
+  &:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+}
+
+.rank {
+  min-width: 32px;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text-secondary-color);
+  text-align: center;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+.username {
+  flex: 1;
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--text-primary-color);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.stars {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--accent-color);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}

@@ -1,13 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 
+import ApiLoader from "@components/ApiLoader";
 import DevWrapper from "@components/development/DevWrapper";
+// import HelloAndSelectLanguage from "@components/HelloAndSelectLanguage";
 import Loader, { type LoaderRef } from "@components/Loader";
 import PopupContainer from "@components/PopupContainer";
 import TabNavigator from "@components/TabBar/TabNavigator";
 import { getTabsConfig } from "@config/tabsConfig";
 import { PopupProvider, usePopup } from "@contexts/PopupContext";
 import { useAuth } from "@hooks/useAuth";
-import ApiLoader from "@components/ApiLoader";
 
 const isDev = import.meta.env.DEV;
 
@@ -15,13 +16,14 @@ const AppContent = () => {
 	const { openPopup } = usePopup();
 	const tabsConfig = getTabsConfig(openPopup);
 	
-	console.log('AppContent rendered, openPopup:', openPopup);
+	console.log("AppContent rendered, openPopup:", openPopup);
 	
 	return (
 		<>
 			<ApiLoader/>
 			<TabNavigator tabs={tabsConfig} defaultTabId="puzzle" />
 			<PopupContainer />
+			{/*<HelloAndSelectLanguage/>*/}
 		</>
 	);
 };
