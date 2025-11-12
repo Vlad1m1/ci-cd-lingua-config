@@ -15,30 +15,38 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
-        
-      - name: Building new containers
-        run: |
-          docker login --username vlad1m1 --password ${{ secrets.GHCR_TOKEN }} ghcr.io
-          docker compose build
-          docker image ls
 
-      - name: Pushing containers
+      - name: Build frontend.
         run: |
-          docker push ghcr.io/vlad1m1/frontend:latest
-          docker push ghcr.io/vlad1m1/backend:latest
+          cd /frontend
+          npm install
+          npm run build
+
+      - name: Build monolite container
+        run: |
+          cd ../server
+          mkdir static
+          cp -r ../frontend/dist/* static/
+          docker build ghcr.io/vlad1m1/monolite:latest .
+          docker login --username vlad1m1 --password ${{ secrets.GHCR_TOKEN }} ghcr.io
+          docker push ghcr.io/vlad1m1/monolite:latest
+
+      - name: Pushing container
+        run: |
+           docker push ghcr.io/vlad1m1/monolite:latest
 
       - name: Add SSH key.
         run: |
           install -m 600 -D /dev/null ~/.ssh/id_rsa
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
+          
       - name: Connecting to server for DEPLOY THIS.
         run: |
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "docker stop ghcr-frontend ghcr-backend"
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "docker rmi --force ghcr.io/vlad1m1/frontend:latest ghcr.io/vlad1m1/backend:latest"
-          ssh -o ServerAliveInterval=150 -o ServerAliveCountMax=5 ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "docker pull ghcr.io/vlad1m1/frontend:latest && docker pull ghcr.io/vlad1m1/backend:latest"
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "docker run -d --name ghcr-backend -p 3000:3000 ghcr.io/vlad1m1/backend"
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "docker run -d --name ghcr-frontend -p 80:80 ghcr.io/vlad1m1/backend"
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "docker stop ghcr-monolite"
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "docker rmi --force ghcr.io/vlad1m1/monolite:latest"
+          ssh -o ServerAliveInterval=300 -o ServerAliveCountMax=5 ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "docker pull ghcr.io/vlad1m1/monolite:latest && docker pull ghcr.io/vlad1m1/monolite:latest"
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "docker run -d --name ghcr-monolite -p 8080:8080 ghcr.io/vlad1m1/monolite:latest"
 
       - name: Cleaning up.
         run: |
