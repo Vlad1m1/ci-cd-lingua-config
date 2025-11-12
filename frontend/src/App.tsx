@@ -3,9 +3,9 @@ import { useState, useEffect, useRef } from "react";
 import ApiLoader from "@components/ApiLoader";
 import DevWrapper from "@components/development/DevWrapper";
 import HelloAndSelectLanguage from "@components/HelloAndSelectLanguage";
+import TabNavigator from "@components/TabBar/TabNavigator";
 import Loader, { type LoaderRef } from "@components/ui/Loader";
 import PopupContainer from "@components/ui/PopupContainer";
-import TabNavigator from "@components/TabBar/TabNavigator";
 import { getTabsConfig } from "@config/tabsConfig";
 import { PopupProvider, usePopup } from "@contexts/PopupContext";
 import WebApp from "@WebApp/WebApp";
@@ -44,7 +44,7 @@ function App() {
 			setIsContentReady(true);
 		}
 	}, [isAuthLoading, isAuthenticated]);
-	
+
 	useEffect(() => {
 		if (isContentReady && !isAuthLoading) {
 			loaderRef.current?.exit();
@@ -54,7 +54,7 @@ function App() {
 	const handleLoaderComplete = () => {
 		setShowLoader(false);
 	};
-	
+
 	if (authError || !isAuthenticated) {
 		return <div>Authentication Error: {authError || "Not authenticated"}</div>;
 	}
