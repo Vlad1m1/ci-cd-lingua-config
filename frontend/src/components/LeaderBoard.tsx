@@ -1,11 +1,9 @@
 import React, { useMemo } from "react";
 
-import { FC } from "react";
-
-import Avatar from "@components/ui/Avatar";
-import Icon from "@components/ui/Icon";
 import LeaderBoardList from "@components/LeaderBoardList";
 import Podium from "@components/Podium";
+import Avatar from "@components/ui/Avatar";
+import Icon from "@components/ui/Icon";
 import {formatNumber} from "@utils/formatNumber";
 
 import { RatingUser } from "@/types/RatingUser";

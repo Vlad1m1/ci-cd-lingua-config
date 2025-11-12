@@ -1,5 +1,3 @@
-import {FC} from "react";
-
 import VirtualList from "@components/ui/VirtualList";
 import cls from "@utils/cls";
 
