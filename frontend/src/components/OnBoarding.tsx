@@ -24,12 +24,11 @@ const OnBoarding: FC<OwnProps> = ({
 	isFullScreen= false,
 }) => {
 	const [isAnimatingOut, setIsAnimatingOut] = useState(false);
-	const prevPropsRef = useRef({ children, title, description, buttonText });
+	const prevPropsRef = useRef({ title, description, buttonText });
 	const [displayContent, setDisplayContent] = useState({ children, title, description, buttonText });
 
 	useEffect(() => {
 		const hasChanged =
-			prevPropsRef.current.children !== children ||
 			prevPropsRef.current.title !== title ||
 			prevPropsRef.current.description !== description ||
 			prevPropsRef.current.buttonText !== buttonText;
@@ -40,12 +39,15 @@ const OnBoarding: FC<OwnProps> = ({
 			const updateTimer = setTimeout(() => {
 				setDisplayContent({ children, title, description, buttonText });
 				setIsAnimatingOut(false);
-				prevPropsRef.current = { children, title, description, buttonText };
+				prevPropsRef.current = { title, description, buttonText };
 			}, 200);
 
 			return () => {
 				clearTimeout(updateTimer);
 			};
+		} else {
+			// Обновляем children без анимации
+			setDisplayContent(prev => ({ ...prev, children }));
 		}
 	}, [children, title, description, buttonText]);
 
@@ -74,9 +76,7 @@ const OnBoarding: FC<OwnProps> = ({
 			>
 				{displayContent.children}
 			</div>
-			<div
-				className={styles.footer}
-			>
+			<div>
 				<Button
 					disabled={!isButtonActive}
 					size="large"

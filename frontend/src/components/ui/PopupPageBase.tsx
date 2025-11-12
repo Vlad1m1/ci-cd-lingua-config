@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import type { ReactNode } from "react";
 
-import PageTransition from "@components/PageTransition";
+import PageTransition from "@components/ui/PageTransition";
 import { useHistory } from "@hooks/useHistory";
 
 interface PopupPageBaseProps {
@@ -11,9 +11,10 @@ interface PopupPageBaseProps {
 }
 
 const PopupPageBase = ({ isOpen, onClose, children }: PopupPageBaseProps) => {
-	const { push } = useHistory();
+	const { push, remove } = useHistory();
 	const onCloseRef = useRef(onClose);
 	const hasBeenPushedRef = useRef(false);
+	const isClosingRef = useRef(false);
 	
 	useEffect(() => {
 		onCloseRef.current = onClose;
@@ -21,12 +22,23 @@ const PopupPageBase = ({ isOpen, onClose, children }: PopupPageBaseProps) => {
 
 	useEffect(() => {
 		if (isOpen && !hasBeenPushedRef.current) {
-			push(onCloseRef.current);
+			const wrappedOnClose = () => {
+				isClosingRef.current = true;
+				onCloseRef.current();
+			};
+			push(wrappedOnClose);
 			hasBeenPushedRef.current = true;
-		} else if (!isOpen) {
-			hasBeenPushedRef.current = false;
 		}
 	}, [isOpen, push]);
+
+	useEffect(() => {
+		return () => {
+			if (hasBeenPushedRef.current && !isClosingRef.current) {
+				remove();
+			}
+		};
+	}, [remove]);
+
 	return (
 		<PageTransition isOpen={isOpen} onClose={onClose}>
 			{children}

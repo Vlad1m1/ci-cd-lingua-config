@@ -1,6 +1,8 @@
 import {useRef, useState} from "react";
 
-import ColoredLottie from "@components/ColoredLottie";
+import React, { FC, ReactElement, ReactNode } from "react";
+
+import ColoredLottie from "@components/ui/ColoredLottie";
 import styles from "@styles/components/TabBar/TabBar.module.scss";
 import {ImpactStyle} from "@WebApp/types/ImpactStyle";
 import WebApp from "@WebApp/WebApp";
@@ -8,7 +10,7 @@ import WebApp from "@WebApp/WebApp";
 
 import type {LottieRefCurrentProps} from "lottie-react";
 
-const MULTIPLY_CLICK_COUNT = 10;
+const MULTIPLY_CLICK_COUNT = 2; //10
 const MULTIPLY_CLICK_MAX_DELAY_MS = 500;
 
 export interface TabConfig {

@@ -14,7 +14,6 @@ export class BaseApiClient {
 		});
 	}
 
-	// Method to set auth token
 	public setAuthToken(token: string | null): void {
 		if (token) {
 			this.axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;

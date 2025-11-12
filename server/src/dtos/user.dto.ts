@@ -72,29 +72,29 @@ export class UserDTO {
 	id: number;
 	externalId: number;
 	username: string;
-	firstName?: string;
-	lastName?: string;
-	photoUrl?: string;
+	firstName: string | null;
+	lastName: string | null;
+	photoUrl: string | null;
 	stars: number;
 	exp: number;
 	role: UserRole;
-	languageId?: number;
+	languageId: number | null;
 	createdAt: Date;
-	lastLoginAt?: Date;
+	lastLoginAt: Date | null;
 
 	constructor(user: User) {
 		this.id = user.id;
 		this.externalId = user.maxUserId!;
 		this.username = user.username;
-		this.firstName = user.firstName || undefined;
-		this.lastName = user.lastName || undefined;
-		this.photoUrl = user.photoUrl || undefined;
+		this.firstName = user.firstName;
+		this.lastName = user.lastName;
+		this.photoUrl = user.photoUrl;
 		this.stars = user.stars;
 		this.exp = user.exp;
 		this.role = user.role;
-		this.languageId = user.languageId || undefined;
+		this.languageId = user.languageId;
 		this.createdAt = user.createdAt;
-		this.lastLoginAt = user.lastLoginAt || undefined;
+		this.lastLoginAt = user.lastLoginAt;
 	}
 
 	static fromUser(user: User): UserDTO {

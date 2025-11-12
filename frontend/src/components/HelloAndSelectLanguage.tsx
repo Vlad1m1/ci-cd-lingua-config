@@ -1,84 +1,97 @@
-import {FC, useCallback, useState} from "react";
+import {FC, useCallback, useState, useEffect} from "react";
 
 import LanguagesBackground from "@components/LanguagesBackground";
 import {LanguageSelector} from "@components/LanguageSelector";
 import OnBoarding from "@components/OnBoarding";
+import { useLanguages, useLanguagesMutations } from "@/hooks/useLanguages";
+import { useUserMutations } from "@/hooks/useUser";
 
-const popupInfoV1 = {
+const welcomeScreenInfo = {
 	id: 1,
-	title: "Заголовок 1",
-	description: "Стартовал онлайн-этап хакатона по созданию чат-ботов и мини-приложений для мессенджера MAX",
+	title: "Добро пожаловать!",
+	description: "Начните изучение иностранных языков в игровой форме. Проходите уровни, соревнуйтесь с друзьями и достигайте новых высот!",
 	buttonText: "Продолжить",
 };
 
-const popupInfoV2 = {
+const languageSelectionInfo = {
 	id: 2,
-	title: "Новый заголовок",
-	description: "Стартовал для мессенджера MAX",
+	title: "Выберите язык",
+	description: "Какой язык вы хотите изучать? Вы сможете изменить свой выбор позже",
 	buttonText: "Продолжить",
 };
+
+const ONBOARDING_ANIMATION_DURATION = 300;
 
 interface OwnProps {
 	onClose?: () => void;
 }
 
-const languages = [
-	{ code: "en", name: "English", emoji: "🇬🇧", disabled: true },
-	{ code: "ru", name: "Русский", emoji: "🇷🇺" },
-	{ code: "es", name: "Español", emoji: "🇪🇸" },
-	{ code: "en", name: "English", emoji: "🇬🇧" },
-	{ code: "ru", name: "Русский", emoji: "🇷🇺" },
-	{ code: "es", name: "Español", emoji: "🇪🇸" },
-	{ code: "en", name: "English", emoji: "🇬🇧" },
-	{ code: "ru", name: "Русский", emoji: "🇷🇺" },
-	{ code: "es", name: "Español", emoji: "🇪🇸" },
-	{ code: "en", name: "English", emoji: "🇬🇧" },
-	{ code: "ru", name: "Русский", emoji: "🇷🇺" },
-	{ code: "es", name: "Español", emoji: "🇪🇸" },
-	{ code: "en", name: "English", emoji: "🇬🇧" },
-	{ code: "ru", name: "Русский", emoji: "🇷🇺" },
-	{ code: "es", name: "Español", emoji: "🇪🇸" },
-	{ code: "en", name: "English", emoji: "🇬🇧" },
-	{ code: "ru", name: "Русский", emoji: "🇷🇺" },
-	{ code: "es", name: "Español", emoji: "🇪🇸" },
-];
-
 const HelloAndSelectLanguage: FC<OwnProps> = ({onClose}) => {
+	const { languages } = useLanguages();
+	const { fetchLanguages } = useLanguagesMutations();
+	const { setLanguage } = useUserMutations();
 	const [step, setStep] = useState<number>(1);
 	const [isFullScreen, setFullScreen] = useState(false);
+	const [selectedLanguage, setSelectedLanguage] = useState<string>("");
 	
-	const [popupInfo, setPopupInfo] = useState(popupInfoV1);
+	const [popupInfo, setPopupInfo] = useState(welcomeScreenInfo);
 	
-	const handleButtonClick = useCallback(() => {
+	const [isShowBackgroundAnimation, setShowBackgroundAnimation] = useState(true);
+
+	useEffect(() => {
+		fetchLanguages();
+	}, [fetchLanguages]);
+
+	useEffect(() => {
+		if(step === 2) {
+			setTimeout(() => {
+				setShowBackgroundAnimation(false);
+			}, ONBOARDING_ANIMATION_DURATION);
+		}
+	}, [step])
+	
+	const handleButtonClick = useCallback(async () => {
 		switch (step) {
 			case 1: {
 				setFullScreen(true);
-				setPopupInfo(popupInfoV2);
+				setPopupInfo(languageSelectionInfo);
 				setStep(2);
 				return;
 			}
 			case 2: {
-				if(onClose) onClose();
+				if (selectedLanguage) {
+					try {
+						await setLanguage(Number(selectedLanguage));
+						if(onClose) onClose();
+					} catch (error) {
+						console.error("Failed to set language:", error);
+					}
+				}
 				return;
 			}
 		}
-	}, [step]);
+	}, [step, selectedLanguage, setLanguage, onClose]);
 	
 	
 	const langSelector = <LanguageSelector
-		languages={languages}
-		selectedLanguage="en"
-		onSelect={(code) => console.log(code)}
+		languages={languages.map(lang => ({
+			code: String(lang.id),
+			name: lang.name,
+			emoji: lang.icon || "🌐",
+		}))}
+		selectedLanguage={selectedLanguage}
+		onSelect={(code) => setSelectedLanguage(code)}
 	/>;
 	
 	return (
 		<div>
-			<LanguagesBackground background="var(--accent-color)"/>
+			{isShowBackgroundAnimation && <LanguagesBackground background="var(--accent-color)"/>}
 			<OnBoarding
 				title={popupInfo.title}
 				description={popupInfo.description}
 				buttonText={popupInfo.buttonText}
 				isFullScreen={isFullScreen}
+				isButtonActive={step === 1 || (step === 2 && selectedLanguage !== "")}
 				onButtonClick={handleButtonClick}
 			>
 				{isFullScreen && langSelector}

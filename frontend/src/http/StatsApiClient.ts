@@ -4,7 +4,7 @@ import { BaseApiClient } from "./BaseApiClient";
 
 export class StatsApiClient extends BaseApiClient {
 	async getLeaderboard(type: LeaderboardType): Promise<LeaderboardDTO> {
-		return this.get<LeaderboardDTO>("/api/stats/leaderboard", {
+		return this.get<LeaderboardDTO>("/stats/leaderboard", {
 			params: { type },
 		});
 	}

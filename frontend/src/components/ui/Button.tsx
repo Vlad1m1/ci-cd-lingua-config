@@ -5,7 +5,11 @@ import {ImpactStyle} from "@WebApp/types/ImpactStyle";
 import {NotificationType} from "@WebApp/types/NotificationType";
 import WebApp from "@WebApp/WebApp";
 
-const Button: FC<ButtonProps> = ({onClick, disabled, ...props}) => {
+interface OwnProps extends ButtonProps {
+	containerClasses?: string;
+}
+
+const Button: FC<OwnProps> = ({onClick, disabled, containerClasses, ...props}) => {
 	const handleWrapperClick = (e: MouseEvent<HTMLDivElement>) => {
 		if (disabled) {
 			WebApp.HapticFeedback.notificationOccurred(NotificationType.ERROR);
@@ -21,7 +25,7 @@ const Button: FC<ButtonProps> = ({onClick, disabled, ...props}) => {
 	};
 
 	return (
-		<div onClick={handleWrapperClick} style={{display: "inline-block"}}>
+		<div onClick={handleWrapperClick} style={{display: "inline-block"}} className={containerClasses}>
 			<MaxButton {...props} disabled={disabled} onClick={handleClick} />
 		</div>
 	);

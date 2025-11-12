@@ -1,0 +1,238 @@
+@import '../root.scss';
+
+.Table {
+  width: 100%;
+  position: relative;
+
+  &_loading {
+    pointer-events: none;
+  }
+
+  &__wrapper {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: visible;
+    border-radius: 12px;
+    background-color: var(--background-primary-color);
+    border: 1px solid var(--border-color);
+    transition: border-color var(--transition-ease-base-fast);
+
+    // Custom scrollbar
+    &::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: var(--background-secondary-color);
+      border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 4px;
+      transition: background var(--transition-ease-base-fast);
+
+      &:hover {
+        background: var(--text-secondary-color);
+      }
+    }
+  }
+
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    table-layout: auto;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  &__thead {
+    background-color: var(--background-secondary-color);
+    position: sticky;
+    top: 0;
+    z-index: var(--z-index-content);
+    transition: background-color var(--transition-ease-base-fast);
+  }
+
+  &__th {
+    padding: 16px 20px;
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-secondary-color);
+    text-align: left;
+    white-space: nowrap;
+    border-bottom: 2px solid var(--border-color);
+    transition: all var(--transition-ease-base-fast);
+
+    &[data-align='center'] {
+      text-align: center;
+    }
+
+    &[data-align='right'] {
+      text-align: right;
+    }
+
+    &:first-child {
+      padding-left: 24px;
+    }
+
+    &:last-child {
+      padding-right: 24px;
+    }
+  }
+
+  &__tbody {
+    background-color: var(--background-primary-color);
+    transition: background-color var(--transition-ease-base-fast);
+  }
+
+  &__row {
+    transition: all var(--transition-ease-base-fast);
+    border-bottom: 1px solid var(--stroke-separator-primary);
+
+    &:nth-child(even) {
+      background-color: var(--background-secondary-color);
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover:not(&_skeleton):not(.Table__emptyRow) {
+      background-color: var(--background-secondary-color);
+      box-shadow: inset 0 0 0 1px var(--border-color);
+      transform: scale(1.001);
+    }
+
+    &_clickable {
+      cursor: pointer;
+
+      &:focus {
+        outline: none;
+        box-shadow: inset 0 0 0 2px var(--accent-color);
+        background-color: var(--background-secondary-color);
+      }
+
+      &:active {
+        transform: scale(0.998);
+        opacity: 0.9;
+      }
+    }
+
+    &_skeleton {
+      pointer-events: none;
+      animation: tablePulse 1.5s ease-in-out infinite;
+    }
+  }
+
+  &__td {
+    padding: 16px 20px;
+    color: var(--text-primary-color);
+    text-align: left;
+    vertical-align: middle;
+    transition: all var(--transition-ease-base-fast);
+
+    &[data-align='center'] {
+      text-align: center;
+    }
+
+    &[data-align='right'] {
+      text-align: right;
+    }
+
+    &:first-child {
+      padding-left: 24px;
+    }
+
+    &:last-child {
+      padding-right: 24px;
+    }
+  }
+
+  &__emptyRow {
+    &:hover {
+      background-color: transparent !important;
+      box-shadow: none !important;
+      transform: none !important;
+    }
+  }
+
+  &__emptyCell {
+    padding: 48px 24px !important;
+    text-align: center !important;
+  }
+
+  &__empty {
+    display: inline-block;
+    color: var(--text-secondary-color);
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  &__skeleton {
+    height: 16px;
+    background: linear-gradient(
+      90deg,
+      var(--background-secondary-color) 0%,
+      var(--border-color) 50%,
+      var(--background-secondary-color) 100%
+    );
+    background-size: 200% 100%;
+    border-radius: 4px;
+    animation: skeletonShimmer 1.5s ease-in-out infinite;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .Table {
+    &__th,
+    &__td {
+      padding: 12px 16px;
+      font-size: 13px;
+
+      &:first-child {
+        padding-left: 16px;
+      }
+
+      &:last-child {
+        padding-right: 16px;
+      }
+    }
+
+    &__th {
+      font-size: 11px;
+    }
+
+    &__emptyCell {
+      padding: 32px 16px !important;
+    }
+
+    &__empty {
+      font-size: 14px;
+    }
+  }
+}
+
+// Animations
+@keyframes tablePulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+@keyframes skeletonShimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}

@@ -1,7 +1,7 @@
-import {FC} from "react";
+import { CSSProperties, FC } from "react";
 
-import Avatar from "@components/Avatar";
-import Icon from "@components/Icon";
+import Avatar from "@components/ui/Avatar";
+import Icon from "@components/ui/Icon";
 import cls from "@utils/cls";
 import {formatNumber} from "@utils/formatNumber";
 import {motion, Variants} from "framer-motion";

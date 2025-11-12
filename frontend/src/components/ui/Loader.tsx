@@ -1,8 +1,8 @@
 import {useRef, useState, useEffect, useImperativeHandle, forwardRef} from "react";
 
 import animationData from "@assets/lottie/language.json";
-import ColoredLottie from "@components/ColoredLottie";
-import styles from "@styles/components/Loader.module.scss";
+import ColoredLottie from "@components/ui/ColoredLottie";
+import styles from "@styles/ui/Loader.module.scss";
 
 import type { LottieRefCurrentProps } from "lottie-react";
 
@@ -32,24 +32,23 @@ const Loader = forwardRef<LoaderRef, LoaderProps>((
 	const isMustExit = useRef<boolean>(false);
 
 	useEffect(() => {
-		if (!lottieRef.current) return;
+		if (!lottieRef.current || isIntroComplete) return;
 		
 		lottieRef.current.setSpeed(ANIMATION_SPEED);
 		lottieRef.current.playSegments(FIRST_ANIMATION_SEGMENT, true);
 		
 		const introDuration = ((FIRST_ANIMATION_SEGMENT[1] - FIRST_ANIMATION_SEGMENT[0]) / FRAME_RATE) * 1000;
 		const timer = setTimeout(() => {
+			console.log(13)
 			setIsIntroComplete(true);
 			onSectionAnimationEnd();
 		}, introDuration);
 
 		return () => clearTimeout(timer);
-	}, []);
+	}, [lottieRef.current, isIntroComplete]);
 
 	useEffect(() => {
 		if (!lottieRef.current || !isIntroComplete) return;
-		
-		if(isMustExit.current) return;
 		
 		const introDuration = ((SECOND_ANIMATION_SEGMENT[1] - SECOND_ANIMATION_SEGMENT[0]) / FRAME_RATE) * 1000;
 		lottieRef.current.playSegments(SECOND_ANIMATION_SEGMENT, true);

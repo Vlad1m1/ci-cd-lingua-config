@@ -9,7 +9,7 @@ import { BaseApiClient } from "./BaseApiClient";
 export class LessonsApiClient extends BaseApiClient {
 	async getModuleLesson(moduleId: number): Promise<LessonDTO | null> {
 		try {
-			return await this.get<LessonDTO>(`/api/modules/${moduleId}/lesson`);
+			return await this.get<LessonDTO>(`/modules/${moduleId}/lesson`);
 		} catch (error: unknown) {
 			if (error && typeof error === "object" && "response" in error) {
 				const axiosError = error as { response?: { status?: number } };
@@ -23,7 +23,7 @@ export class LessonsApiClient extends BaseApiClient {
 
 	async createLesson(moduleId: number, data: CreateLessonRequestDTO): Promise<LessonDTO> {
 		return this.post<LessonDTO, CreateLessonRequestDTO>(
-			`/api/modules/${moduleId}/lesson`,
+			`/modules/${moduleId}/lesson`,
 			data,
 		);
 	}

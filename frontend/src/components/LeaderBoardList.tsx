@@ -1,6 +1,6 @@
-import React from "react";
+import {FC} from "react";
 
-import VirtualList from "@components/VirtualList";
+import VirtualList from "@components/ui/VirtualList";
 import cls from "@utils/cls";
 
 import styles from "../styles/components/LeaderBoardList.module.scss";

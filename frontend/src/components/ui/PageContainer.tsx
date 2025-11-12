@@ -1,6 +1,6 @@
 import {FC, ReactNode} from "react";
 
-import styles from "@styles/components/PageContainer.module.scss";
+import styles from "@styles/ui/PageContainer.module.scss";
 
 interface OwnProps {
 	children: ReactNode | ReactNode[] | string;

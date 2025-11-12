@@ -11,6 +11,7 @@ interface HistoryContextType {
   currentItem: HistoryItem | undefined;
   push: (backFunction: () => void) => void;
   pop: () => void;
+  remove: () => void; // Remove without calling backFunction
   clear: () => void;
   canGoBack: boolean;
   length: number;
@@ -39,6 +40,13 @@ export const HistoryProvider = ({ children }: { children: ReactNode }) => {
    
 			const newHistory = prev.slice(0, -1);
 			return newHistory;
+		});
+	}, []);
+
+	const remove = useCallback(() => {
+		setHistory(prev => {
+			if (prev.length === 0) return prev;
+			return prev.slice(0, -1);
 		});
 	}, []);
 
@@ -75,6 +83,7 @@ export const HistoryProvider = ({ children }: { children: ReactNode }) => {
 				currentItem,
 				push,
 				pop,
+				remove,
 				clear,
 				canGoBack: history.length > 0,
 				length: history.length,

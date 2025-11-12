@@ -2,38 +2,43 @@ import { useState, useEffect, useRef } from "react";
 
 import ApiLoader from "@components/ApiLoader";
 import DevWrapper from "@components/development/DevWrapper";
-// import HelloAndSelectLanguage from "@components/HelloAndSelectLanguage";
-import Loader, { type LoaderRef } from "@components/Loader";
-import PopupContainer from "@components/PopupContainer";
+import HelloAndSelectLanguage from "@components/HelloAndSelectLanguage";
+import Loader, { type LoaderRef } from "@components/ui/Loader";
+import PopupContainer from "@components/ui/PopupContainer";
 import TabNavigator from "@components/TabBar/TabNavigator";
 import { getTabsConfig } from "@config/tabsConfig";
 import { PopupProvider, usePopup } from "@contexts/PopupContext";
-import { useAuth } from "@hooks/useAuth";
+import WebApp from "@WebApp/WebApp";
+
+import { useAuth } from "@/hooks/useAuth";
+import { useUser } from "@/hooks/useUser";
 
 const isDev = import.meta.env.DEV;
 
 const AppContent = () => {
 	const { openPopup } = usePopup();
+	const { user } = useUser();
 	const tabsConfig = getTabsConfig(openPopup);
-	
-	console.log("AppContent rendered, openPopup:", openPopup);
-	
+
 	return (
 		<>
 			<ApiLoader/>
 			<TabNavigator tabs={tabsConfig} defaultTabId="puzzle" />
 			<PopupContainer />
-			{/*<HelloAndSelectLanguage/>*/}
+			 {user?.languageId === null && <HelloAndSelectLanguage/>}
 		</>
 	);
 };
 
 function App() {
-	const { isLoading: isAuthLoading, error: authError, isAuthenticated, user } = useAuth();
+	const { isLoading: isAuthLoading, error: authError, isAuthenticated, authenticate } = useAuth();
 	const [showLoader, setShowLoader] = useState(true);
 	const [isContentReady, setIsContentReady] = useState(false);
 	const loaderRef = useRef<LoaderRef>(null);
-	
+
+	useEffect(() => {
+		authenticate(WebApp.initData);
+	}, []);
 	useEffect(() => {
 		if (!isAuthLoading && isAuthenticated) {
 			setIsContentReady(true);
@@ -50,10 +55,6 @@ function App() {
 		setShowLoader(false);
 	};
 	
-	
-	useEffect(() => {
-		console.log(user);
-	}, [user]);
 	if (authError || !isAuthenticated) {
 		return <div>Authentication Error: {authError || "Not authenticated"}</div>;
 	}

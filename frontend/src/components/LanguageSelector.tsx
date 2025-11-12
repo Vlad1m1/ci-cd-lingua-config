@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 
-import Icon from "@components/Icon";
+import Icon from "@components/ui/Icon";
 import {CellList, CellSimple} from "@maxhub/max-ui";
 import styles from "@styles/components/LanguageSelector.module.scss";
 import cls from "@utils/cls";

@@ -1,4 +1,5 @@
 import { Levels } from "@components/Levels";
+import Header from "@components/Header";
 
 import { usePopup } from "../../contexts/PopupContext";
 import DetailPage from "../DetailPage/DetailPage";
@@ -26,6 +27,7 @@ const CoursePage = () => {
 
 	return (
 		<div className={styles.container}>
+			<Header />
 			<Levels levels={levels}/>
 		</div>
 	);

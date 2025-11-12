@@ -34,7 +34,6 @@ export class ApiClient {
 		this.media = new MediaApiClient();
 	}
 
-	// Set auth token for all API clients
 	public setAuthToken(token: string | null): void {
 		this.auth.setAuthToken(token);
 		this.friends.setAuthToken(token);

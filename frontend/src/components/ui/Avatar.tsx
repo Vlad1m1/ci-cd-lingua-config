@@ -4,7 +4,7 @@ import {FC} from "react";
 import {Avatar as MaxAvatar} from "@maxhub/max-ui";
 import cls from "@utils/cls";
 
-import styles from "../styles/components/Avatar.module.scss";
+import styles from "../../styles/ui/Avatar.module.scss";
 
 interface OwnProps {
 	url?: string | null;
