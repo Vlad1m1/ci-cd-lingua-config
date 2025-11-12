@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import { useQuestsStore } from "@store/questsStore";
 import { apiClient } from "@/http";
-import { QuestDTO, CreateQuestRequestDTO } from "@/types/api";
+import { QuestDTO, QuestFullDTO, CreateQuestRequestDTO } from "@/types/api";
 
 export const useQuests = () => {
 	const { quests, currentQuestId, isLoading, error } = useQuestsStore();
@@ -17,7 +17,7 @@ export const useQuests = () => {
 export const useQuestsMutations = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
-	const { setQuests, addQuest, updateQuest, removeQuest } = useQuestsStore();
+	const { setQuests, addQuest, removeQuest } = useQuestsStore();
 
 	const fetchQuestsByLevel = useCallback(async (levelId: number) => {
 		setIsLoading(true);
@@ -38,12 +38,12 @@ export const useQuestsMutations = () => {
 		}
 	}, [setQuests]);
 
-	const fetchQuestById = useCallback(async (questId: number) => {
+	const fetchQuestById = useCallback(async (questId: number): Promise<QuestFullDTO> => {
 		setIsLoading(true);
 		setError(null);
 		try {
-			const quest: QuestDTO = await apiClient.quests.getQuestById(questId);
-			updateQuest(questId, quest);
+			const quest: QuestFullDTO = await apiClient.quests.getQuestById(questId);
+			// Note: This returns full quest data, not stored in lightweight list
 			return quest;
 		} catch (err) {
 			const errorMessage = err instanceof Error ? err.message : "Failed to fetch quest";
@@ -53,14 +53,20 @@ export const useQuestsMutations = () => {
 		} finally {
 			setIsLoading(false);
 		}
-	}, [updateQuest]);
+	}, []);
 
-	const createQuest = useCallback(async (data: CreateQuestRequestDTO) => {
+	const createQuest = useCallback(async (data: CreateQuestRequestDTO): Promise<QuestFullDTO> => {
 		setIsLoading(true);
 		setError(null);
 		try {
-			const quest: QuestDTO = await apiClient.quests.createQuest(data);
-			addQuest(quest);
+			const quest: QuestFullDTO = await apiClient.quests.createQuest(data);
+			// Add lightweight version to the list
+			const lightweightQuest: QuestDTO = {
+				id: Number(quest.id),
+				type: quest.type,
+				levelId: Number(quest.levelId),
+			};
+			addQuest(lightweightQuest);
 			return quest;
 		} catch (err) {
 			const errorMessage = err instanceof Error ? err.message : "Failed to create quest";

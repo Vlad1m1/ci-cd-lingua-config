@@ -7,7 +7,7 @@ export class MediaApiClient extends BaseApiClient {
 		return this.get<MediaDTO>(`/media/${mediaId}`);
 	}
 
-	getMediaUrl(mediaId: number): string {
-		return `${this.axiosInstance.defaults.baseURL}/media/${mediaId}`;
+	getMediaUrl(mediaId: number | string): string {
+		return `${this.axiosInstance.defaults.baseURL}/media/${mediaId}/file`;
 	}
 }

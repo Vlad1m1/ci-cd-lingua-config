@@ -30,12 +30,12 @@ export class LessonsApiClient extends BaseApiClient {
 
 	async updateLesson(moduleId: number, data: UpdateLessonRequestDTO): Promise<LessonDTO> {
 		return this.put<LessonDTO, UpdateLessonRequestDTO>(
-			`/api/modules/${moduleId}/lesson`,
+			`/modules/${moduleId}/lesson`,
 			data,
 		);
 	}
 
 	async deleteLesson(moduleId: number): Promise<void> {
-		return this.delete<void>(`/api/modules/${moduleId}/lesson`);
+		return this.delete<void>(`/modules/${moduleId}/lesson`);
 	}
 }

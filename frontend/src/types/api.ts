@@ -79,7 +79,7 @@ export interface UserProgressDTO {
 export interface LevelDTO {
 	id: number;
 	moduleId: number;
-	name: string;
+	icon: string;
 	questsCount: number;
 	userProgress?: UserProgressDTO | null;
 }
@@ -102,41 +102,51 @@ export interface ModuleDTO {
 }
 
 export interface WordDTO {
-	id: number;
+	id: string;
 	value: string;
-	audioUrl?: string;
+	mediaId?: string;
 }
 
-export interface QuestMatchWordsDTO {
-	id: number;
-	questId: number;
+export interface MatchWordPairDTO {
 	word: string;
 	translate: string;
 }
 
+export type QuestType = "MATCH_WORDS" | "DICTATION" | "TRANSLATE";
+
+// Full quest responses (GET /api/quests/{questId})
+export interface QuestMatchWordsDTO {
+	id: string;
+	type: "MATCH_WORDS";
+	levelId: string;
+	match_words: MatchWordPairDTO[];
+}
+
 export interface QuestDictationDTO {
-	id: number;
-	questId: number;
-	audioUrl?: string;
+	id: string;
+	type: "DICTATION";
+	levelId: string;
+	mediaId?: string;
 	correctSentence: string;
 	words: WordDTO[];
 }
 
 export interface QuestTranslateDTO {
-	id: number;
-	questId: number;
+	id: string;
+	type: "TRANSLATE";
+	levelId: string;
 	sourceSentence: string;
 	correctSentence: string;
 	words: WordDTO[];
 }
 
-export type QuestType = "MATCH_WORDS" | "DICTATION" | "TRANSLATE";
+export type QuestFullDTO = QuestMatchWordsDTO | QuestDictationDTO | QuestTranslateDTO;
 
+// Lightweight quest list item (GET /api/levels/{levelId}/quests)
 export interface QuestDTO {
 	id: number;
 	type: QuestType;
 	levelId: number;
-	data?: QuestMatchWordsDTO | QuestDictationDTO | QuestTranslateDTO;
 }
 
 // Request DTOs
@@ -185,27 +195,25 @@ export interface UpdateLessonRequestDTO {
 
 export interface CreateLevelRequestDTO {
 	moduleId: number;
-	name: string;
-	questsCount: number;
+	icon: string;
 }
 
 export interface UpdateLevelRequestDTO {
-	name?: string;
-	questsCount?: number;
+	moduleId?: number;
+	icon?: string;
 }
 
+// Quest creation request DTOs
 export interface CreateQuestMatchWordsRequestDTO {
 	type: "MATCH_WORDS";
 	levelId: number;
-	word: string;
-	translate: string;
+	data: MatchWordPairDTO[];
 }
 
 export interface CreateQuestDictationRequestDTO {
 	type: "DICTATION";
 	levelId: number;
 	correctSentence: string;
-	correctWords: string[];
 	distractorWords?: string[];
 }
 
@@ -214,7 +222,6 @@ export interface CreateQuestTranslateRequestDTO {
 	levelId: number;
 	sourceSentence: string;
 	correctSentence: string;
-	correctWords: string[];
 	distractorWords?: string[];
 }
 

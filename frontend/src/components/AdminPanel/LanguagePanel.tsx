@@ -11,7 +11,6 @@ import { LanguageDTO } from "@/types/api";
 import styles from "../../styles/components/AdminPanel/LanguagePanel.module.scss";
 
 const UI_STRINGS = {
-	TITLE: "Управление языками",
 	ADD_BUTTON: "Добавить язык",
 	EDIT_TITLE: "Редактировать язык",
 	CREATE_TITLE: "Создать язык",
@@ -214,7 +213,6 @@ const LanguagePanel: FC = () => {
 	return (
 		<div className={styles.languagePanel}>
 			<div className={styles.header}>
-				<h2 className={styles.title}>{UI_STRINGS.TITLE}</h2>
 				<Button onClick={handleCreate} className={styles.addButton}>
 					{UI_STRINGS.ADD_BUTTON}
 				</Button>
