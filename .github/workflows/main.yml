@@ -23,7 +23,7 @@ jobs:
 
       - name: Build monolite container
         run: |
-          cd ../server
+          cd ci-cd-lingua-config/server
           mkdir static
           cp -r ../frontend/dist/* static/
           cd ..
