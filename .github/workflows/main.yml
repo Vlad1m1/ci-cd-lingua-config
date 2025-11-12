@@ -1,7 +1,5 @@
 name: Build and push to github container registry docker containers
 
-if: else
-
 on:
   push:
     branches: ["main"]
@@ -27,7 +25,8 @@ jobs:
           cd ../server
           mkdir static
           cp -r ../frontend/dist/* static/
-          docker build ghcr.io/vlad1m1/monolite:latest .
+          cd ..
+          docker compose build
           docker login --username vlad1m1 --password ${{ secrets.GHCR_TOKEN }} ghcr.io
           docker push ghcr.io/vlad1m1/monolite:latest
 
@@ -46,7 +45,7 @@ jobs:
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "docker stop ghcr-monolite"
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "docker rmi --force ghcr.io/vlad1m1/monolite:latest"
           ssh -o ServerAliveInterval=300 -o ServerAliveCountMax=5 ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "docker pull ghcr.io/vlad1m1/monolite:latest && docker pull ghcr.io/vlad1m1/monolite:latest"
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "docker run -d --name ghcr-monolite -p 8080:8080 ghcr.io/vlad1m1/monolite:latest"
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "docker run -d --name ghcr-monolite -p 80:80 ghcr.io/vlad1m1/monolite:latest"
 
       - name: Cleaning up.
         run: |
