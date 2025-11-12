@@ -17,8 +17,7 @@ jobs:
       - name: Build frontend.
         run: |
           git clone https://github.com/Vlad1m1/ci-cd-lingua-config
-          cd ci-cd-lingua-config
-          cd /frontend
+          cd ci-cd-lingua-config/frontend
           npm install
           npm run build
 
@@ -52,5 +51,6 @@ jobs:
       - name: Cleaning up.
         run: |
           rm -rf ~/.ssh
+          rm -rf ~/ci-cd-lingua-config
 
   
