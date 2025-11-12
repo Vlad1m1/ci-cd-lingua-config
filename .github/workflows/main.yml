@@ -16,7 +16,8 @@ jobs:
 
       - name: Build frontend.
         run: |
-          git clone https://github.com/Vlad1m1/ci-cd-lingua-config .
+          git clone https://github.com/Vlad1m1/ci-cd-lingua-config
+          cd ci-cd-lingua-config
           cd /frontend
           npm install
           npm run build
