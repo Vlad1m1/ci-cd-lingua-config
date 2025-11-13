@@ -1,29 +1,39 @@
 services:
-  monolit:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: ghcr.io/vlad1m1/frontend:latest
+    ports:
+      - "80:80"
+    environment:
+      - API_URL=http://backend:3000
+    depends_on:
+      - backend
+
+  backend:
     build:
       context: ./server
       dockerfile: Dockerfile
-    image: ghcr.io/vlad1m1/monolit:latest
+    image: ghcr.io/vlad1m1/backend:latest
     ports:
       - "3000:3000"
+    env_file:
+      - ./server/.env
     depends_on:
       - postgres
 
   postgres:
     image: postgres:15
-    restart: unless-stopped
     environment:
-      POSTGRES_DB: foreignlang
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      - POSTGRES_DB=foreignlang
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./db-init:/docker-entrypoint-initdb.d
     ports:
       - "5432:5432"
-    volumes:
-      - pg-data:/var/lib/postgresql/data
-      - ./pg-init:/docker-entrypoint-initdb.d
 
 volumes:
-  pg-data:
-
-
-
+  postgres-data:
