@@ -43,7 +43,7 @@ jobs:
           
       - name: Connecting to server for DEPLOY THIS.
         run: |
-          ssh -o ServerAliveInterval=300 -o ServerAliveCountMax=5 ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "docker pull ghcr.io/vlad1m1/monolite:latest && docker pull ghcr.io/vlad1m1/monolite:latest"
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "docker pull ghcr.io/vlad1m1/monolite:latest && docker pull ghcr.io/vlad1m1/monolite:latest"
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "docker run -d --name ghcr-monolite -p 80:80 ghcr.io/vlad1m1/monolite:latest"
 
       - name: Cleaning up.
