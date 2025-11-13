@@ -14,26 +14,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v5
 
-      - name: Build frontend.
+      - name: Build containers.
         run: |
-          git clone https://github.com/Vlad1m1/ci-cd-lingua-config
-          cd ci-cd-lingua-config/frontend
-          npm install
-          npm run build
-
-      - name: Build monolit container
-        run: |
-          cd ci-cd-lingua-config/server
-          mkdir static
-          cp -r ../frontend/dist/* static/
-          cd ..
           docker compose build
-          docker login --username vlad1m1 --password ${{ secrets.GHCR_TOKEN }} ghcr.io
-          docker push ghcr.io/vlad1m1/monolit:latest
 
       - name: Pushing container
         run: |
-           docker push ghcr.io/vlad1m1/monolit:latest
+          docker login --username vlad1m1 --password ${{ secrets.GHCR_TOKEN }} ghcr.io
+          docker push ghcr.io/vlad1m1/frontend:latest
+          docker push ghcr.io/vlad1m1/backend:latest
 
       - name: Add SSH key.
         run: |
@@ -43,11 +32,10 @@ jobs:
           
       - name: Connecting to server for DEPLOY THIS.
         run: |
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "docker stop ghcr-monolit"
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "docker rm ghcr-monolit"
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "docker rmi --force ghcr.io/vlad1m1/monolit:latest"
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "docker pull ghcr.io/vlad1m1/monolit:latest"
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "docker run -d --name ghcr-monolit ghcr.io/vlad1m1/monolit:latest"
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "docker pull ghcr.io/vlad1m1/frontend:latest"
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "docker pull ghcr.io/vlad1m1/backend:latest"
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "docker run -d --name ghcr-frontend ghcr.io/vlad1m1/frontend:latest"
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "docker run -d --name ghcr-backend ghcr.io/vlad1m1/backend:latest"
 
       - name: Cleaning up.
         run: |
