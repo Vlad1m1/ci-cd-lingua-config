@@ -44,7 +44,7 @@ jobs:
       - name: Connecting to server for DEPLOY THIS.
         run: |
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "docker pull ghcr.io/vlad1m1/monolit:latest"
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "docker run -d --name ghcr-monolite -p 80:80 ghcr.io/vlad1m1/monolite:latest"
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "docker run -d --name ghcr-monolit -p 80:80 ghcr.io/vlad1m1/monolit:latest"
 
       - name: Cleaning up.
         run: |
